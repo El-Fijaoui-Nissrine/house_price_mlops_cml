@@ -1,0 +1,59 @@
+name: ML CI/CD with CML
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+jobs:
+  cml:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+
+    steps:
+      # 1️⃣ Checkout repository
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      # 2️⃣ Set up Python
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      # 3️⃣ Install dependencies
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install cml
+
+      # 4️⃣ Train model
+      - name: Train model
+        run: |
+          python -m src.train
+
+      # 5️⃣ Evaluate model
+      - name: Evaluate model
+        run: |
+          python -m src.evaluate
+
+      # 6️⃣ Generate plots
+      - name: Generate plots
+        run: |
+          python -m src.plots
+
+      # 7️⃣ Compare metrics with baseline
+      - name: Generate comparison report
+        run: |
+          python -m src.compare
+
+      # 8️⃣ Post PR comment via CML
+      - name: Post CML comment
+        env:
+          REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          cml-send-comment reports/comparison_report.md --md

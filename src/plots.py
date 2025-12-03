@@ -26,7 +26,6 @@ def plot_pred_vs_true():
     r2 = r2_score(df["y_true"], df["y_pred"])
 
     plt.figure(figsize=(7,7))
-    sns.kdeplot(x=df["y_true"], y=df["y_pred"], fill=True, cmap="viridis", thresh=0.05)
     plt.scatter(df["y_true"], df["y_pred"], alpha=0.2, s=10, color="blue")
     plt.xlabel("Prix réels")
     plt.ylabel("Prix prédits")

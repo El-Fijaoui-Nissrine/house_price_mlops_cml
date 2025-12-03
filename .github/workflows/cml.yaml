@@ -58,6 +58,7 @@ jobs:
         env:
           REPO_TOKEN: ${{ secrets.CML_GH_TOKEN }}
         run: |
+          mkdir -p reports
           NEW_PRED=$(cml publish metrics/pred_vs_true.png)
           NEW_RES=$(cml publish metrics/residuals.png)
           echo "NEW_PRED_URL=$NEW_PRED" >> reports/links.env

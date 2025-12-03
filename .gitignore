@@ -1,0 +1,15 @@
+venv/
+__pycache__/
+results/
+*.pyc
+data/house_price.csv
+models/
+metrics/metrics.json
+metrics/predictions.csv
+metrics/pred_vs_true.png
+metrics/residuals.png
+reports/
+test_data/
+venv/
+__pycache__/
+

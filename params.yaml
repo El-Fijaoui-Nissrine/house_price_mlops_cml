@@ -1,0 +1,14 @@
+model:
+  type: "GradientBoostingRegressor"
+  n_estimators: 200
+  learning_rate: 0.1
+  max_depth: 3
+  random_state: 42
+  test_size: 0.2
+
+paths:
+  raw_data: "data/processed/processed_data.csv"
+  model_out: "models/model.joblib"
+  metrics_out: "metrics/metrics.json"
+  plot_pred: "metrics/pred_vs_true.png"
+  plot_resid: "metrics/residuals.png"

@@ -11,6 +11,7 @@ def compare_metrics(baseline, new):
     report = []
     report.append("# 📊 Model Metrics Comparison\n")
 
+    # ---- METRICS ----
     for key in baseline.keys():
         base = baseline[key]
         new_val = new.get(key, None)
@@ -25,20 +26,25 @@ def compare_metrics(baseline, new):
             f"- **{key}**: baseline={base:.4f}, new={new_val:.4f}, diff={diff:.4f} {emoji}"
         )
 
-    # Ajouter images (nouveau vs baseline)
+    # ---- PLOTS ----
     report.append("\n## 📈 Comparaison des plots")
+
     plots = [
-        ("Vrais vs Prédits", "plot_pred", "pred_vs_true"),
-        ("Résiduels", "plot_resid", "residuals")
+        ("Vrais vs Prédits", "pred_vs_true"),
+        ("Résiduels", "residuals")
     ]
-    for title, key, base_name in plots:
-        new_img = f"metrics/{base_name}.png"
-        baseline_img = f"metrics/{base_name}_baseline.png"
-        report.append(f"### {title}")
+
+    for title, name in plots:
+        new_img = f"metrics/{name}.png"
+        base_img = f"metrics/{name}_baseline.png"
+
+        report.append(f"\n### {title}")
+
         if os.path.exists(new_img):
-            report.append(f"**Nouveau modèle:** ![](metrics/pred_vs_true.png)")
-        if os.path.exists(baseline_img):
-            report.append(f"**Baseline:** ![](metrics/pred_vs_true_baseline.png)")
+            report.append(f"**Nouveau modèle:** ![]({new_img})")
+
+        if os.path.exists(base_img):
+            report.append(f"**Baseline:** ![]({base_img})")
 
     return "\n".join(report)
 

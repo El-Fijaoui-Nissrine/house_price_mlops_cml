@@ -7,7 +7,20 @@ def load_json(path):
     with open(path, "r") as f:
         return json.load(f)
 
-def compare_metrics(baseline, new):
+def load_links():
+    """Charge les URLs CML des images publiées"""
+    path = "reports/links.env"
+    if not os.path.exists(path):
+        return {}
+    links = {}
+    with open(path) as f:
+        for line in f:
+            if "=" in line:
+                k, v = line.strip().split("=", 1)
+                links[k] = v
+    return links
+
+def compare_metrics(baseline, new, links):
     report = []
     report.append("# 📊 Model Metrics Comparison\n")
 
@@ -15,34 +28,26 @@ def compare_metrics(baseline, new):
     for key in baseline.keys():
         base = baseline[key]
         new_val = new.get(key, None)
-
         if new_val is None:
             report.append(f"- ❌ `{key}` missing in new metrics\n")
             continue
         
         diff = new_val - base
         emoji = "🟢" if diff > 0 else "🔴" if diff < 0 else "⚪"
-        report.append(
-            f"- **{key}**: baseline={base:.4f}, new={new_val:.4f}, diff={diff:.4f} {emoji}"
-        )
+        report.append(f"- **{key}**: baseline={base:.4f}, new={new_val:.4f}, diff={diff:.4f} {emoji}")
 
     # ---- PLOTS ----
     report.append("\n## 📈 Comparaison des plots")
 
     plots = [
-        ("Vrais vs Prédits", "pred_vs_true"),
-        ("Résiduels", "residuals")
+        ("Vrais vs Prédits", "pred_vs_true", links.get("NEW_PRED_URL", "metrics/pred_vs_true.png")),
+        ("Résiduels", "residuals", links.get("NEW_RES_URL", "metrics/residuals.png"))
     ]
 
-    for title, name in plots:
-        new_img = f"metrics/{name}.png"
+    for title, name, new_url in plots:
         base_img = f"metrics/{name}_baseline.png"
-
         report.append(f"\n### {title}")
-
-        if os.path.exists(new_img):
-            report.append(f"**Nouveau modèle:** ![]({new_img})")
-
+        report.append(f"**Nouveau modèle:** ![]({new_url})")
         if os.path.exists(base_img):
             report.append(f"**Baseline:** ![]({base_img})")
 
@@ -55,8 +60,9 @@ def main():
 
     baseline = load_json(baseline_path)
     new = load_json(new_path)
+    links = load_links()
 
-    report = compare_metrics(baseline, new)
+    report = compare_metrics(baseline, new, links)
 
     os.makedirs("reports", exist_ok=True)
     with open(output_path, "w") as f:

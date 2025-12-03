@@ -1,68 +1,53 @@
-import json
+
 import os
+import json
 
 def load_json(path):
-    if not os.path.exists(path):
-        raise FileNotFoundError(f"File not found: {path}")
     with open(path, "r") as f:
         return json.load(f)
 
+
 def compare_metrics(baseline, new):
-    report = []
-    report.append("# 📊 Model Metrics Comparison\n")
+    lines = ["# 📊 Model Metrics Comparison\n"]
 
-    # ---- METRICS ----
-    for key in baseline.keys():
+    for key in baseline:
         base = baseline[key]
-        new_val = new.get(key, None)
-
-        if new_val is None:
-            report.append(f"- ❌ `{key}` missing in new metrics\n")
-            continue
-        
+        new_val = new[key]
         diff = new_val - base
+
         emoji = "🟢" if diff > 0 else "🔴" if diff < 0 else "⚪"
-        report.append(
-            f"- **{key}**: baseline={base:.4f}, new={new_val:.4f}, diff={diff:.4f} {emoji}"
+        lines.append(
+            f"* **{key}**: baseline={base:.4f}, new={new_val:.4f}, diff={diff:.4f} {emoji}"
         )
 
-    # ---- PLOTS ----
-    report.append("\n## 📈 Comparaison des plots")
+    return "\n".join(lines)
 
-    plots = [
-        ("Vrais vs Prédits", "pred_vs_true"),
-        ("Résiduels", "residuals")
-    ]
-
-    for title, name in plots:
-        new_img = f"metrics/{name}.png"
-        base_img = f"metrics/{name}_baseline.png"
-
-        report.append(f"\n### {title}")
-
-        if os.path.exists(new_img):
-            report.append(f"**Nouveau modèle:** ![]({new_img})")
-
-        if os.path.exists(base_img):
-            report.append(f"**Baseline:** ![]({base_img})")
-
-    return "\n".join(report)
 
 def main():
-    baseline_path = "metrics/baseline_metrics.json"
-    new_path = "metrics/metrics.json"
-    output_path = "reports/comparison_report.md"
+    baseline = load_json("metrics/baseline_metrics.json")
+    new = load_json("metrics/metrics.json")
+    urls = load_json("metrics/plot_urls.json")
 
-    baseline = load_json(baseline_path)
-    new = load_json(new_path)
+    report = []
+    report.append(compare_metrics(baseline, new))
 
-    report = compare_metrics(baseline, new)
+    report.append("\n## 📈 Comparaison des plots\n")
+
+    # Images hébergées chez CML (URLs)
+    report.append("### Vrais vs Prédits\n")
+    report.append(f"**Nouveau modèle :** ![]({urls['pred_vs_true']})")
+    report.append("")
+
+    report.append("### Résiduels\n")
+    report.append(f"**Nouveau modèle :** ![]({urls['residuals']})")
+    report.append("")
 
     os.makedirs("reports", exist_ok=True)
-    with open(output_path, "w") as f:
-        f.write(report)
+    with open("reports/comparison_report.md", "w") as f:
+        f.write("\n".join(report))
 
-    print(f"✔ Comparison report saved to {output_path}")
+    print("✔ Rapport généré : reports/comparison_report.md")
+
 
 if __name__ == "__main__":
     main()

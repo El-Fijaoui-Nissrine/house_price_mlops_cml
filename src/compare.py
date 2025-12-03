@@ -44,7 +44,7 @@ def compare_metrics(baseline, new, links):
         ("Résiduels", "residuals", links.get("NEW_RES_URL", "metrics/residuals.png"), links.get("BASE_RES_URL", "metrics/residuals_baseline.png"))
     ]
 
-    for title,  new_url , base_url in plots:
+    for title, name, new_url , base_url in plots:
         report.append(f"\n### {title}")
         report.append(f"**Nouveau modèle:** ![]({new_url})")
         report.append(f"**Baseline:** ![]({base_url})")

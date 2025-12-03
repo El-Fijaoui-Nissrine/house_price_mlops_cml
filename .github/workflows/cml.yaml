@@ -60,6 +60,8 @@ jobs:
             -w /app \
             house_price_mlops \
             python -m src.compare
+      - name: Debug - List metrics
+        run: ls -l metrics
 
       #  Post CML comment
       - name: Post CML comment

@@ -1,4 +1,4 @@
-name: ML CI/CD with CML
+name: ML CI/CD with CML (Docker)
 
 on:
   pull_request:
@@ -7,51 +7,59 @@ on:
     branches: [main]
 
 jobs:
-  cml:
+  cml-docker:
     runs-on: ubuntu-latest
     permissions:
       contents: read
       pull-requests: write
 
     steps:
-      # 1️⃣ Checkout repository
+      #  Checkout repository
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      # 2️⃣ Set up Python
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.11'
-
-      # 3️⃣ Install dependencies
-      - name: Install dependencies
+      #  Set up Docker container
+      - name: Build Docker image
         run: |
-          python -m pip install --upgrade pip
-          pip install -r requirements.txt
-          pip install cml
+          docker build -t house-price-mlops .
 
-      # 4️⃣ Train model
-      - name: Train model
+      #  Run training in Docker
+      - name: Train model inside Docker
         run: |
-          python -m src.train
+          docker run --rm \
+            -v ${{ github.workspace }}:/app \
+            -w /app \
+            house-price-mlops \
+            python -m src.train
 
-      # 5️⃣ Evaluate model
-      - name: Evaluate model
+      #  Run evaluation inside Docker
+      - name: Evaluate model inside Docker
         run: |
-          python -m src.evaluate
+          docker run --rm \
+            -v ${{ github.workspace }}:/app \
+            -w /app \
+            house-price-mlops \
+            python -m src.evaluate
 
-      # 6️⃣ Generate plots
-      - name: Generate plots
+      #  Generate plots inside Docker
+      - name: Generate plots inside Docker
         run: |
-          python -m src.plots
+          docker run --rm \
+            -v ${{ github.workspace }}:/app \
+            -w /app \
+            house-price-mlops \
+            python -m src.plots
 
-      # 7️⃣ Compare metrics with baseline
+      #  Compare metrics inside Docker
       - name: Generate comparison report
         run: |
-          python -m src.compare
+          docker run --rm \
+            -v ${{ github.workspace }}:/app \
+            -w /app \
+            house-price-mlops \
+            python -m src.compare
 
-      # 8️⃣ Post PR comment via CML
+      #  Post CML comment
       - name: Post CML comment
         env:
           REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}

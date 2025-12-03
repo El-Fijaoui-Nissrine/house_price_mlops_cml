@@ -1,4 +1,3 @@
-# src/compare.py
 import json
 import os
 
@@ -9,29 +8,37 @@ def load_json(path):
         return json.load(f)
 
 def compare_metrics(baseline, new):
-    """
-    Retourne un rapport Markdown avec table :
-    | Metric | Baseline | New | Diff | Status |
-    """
-    report = ["# 📊 Model Metrics Comparison\n"]
-    report.append("| Metric | Baseline | New | Diff | Status |")
-    report.append("|--------|----------|-----|------|--------|")
+    report = []
+    report.append("# 📊 Model Metrics Comparison\n")
 
     for key in baseline.keys():
         base = baseline[key]
         new_val = new.get(key, None)
 
         if new_val is None:
-            report.append(f"| {key} | {base:.4f} | - | - | ❌ Missing |")
+            report.append(f"- ❌ `{key}` missing in new metrics\n")
             continue
-
+        
         diff = new_val - base
-        status = "🟢 Improved" if diff < 0 else "🔴 Worse" if diff > 0 else "⚪ Same"
-        # Attention RMSE/MAE : plus petit = meilleur, R2 : plus grand = meilleur
-        if key in ["r2"]:  # plus grand meilleur
-            status = "🟢 Improved" if diff > 0 else "🔴 Worse" if diff < 0 else "⚪ Same"
+        emoji = "🟢" if diff > 0 else "🔴" if diff < 0 else "⚪"
+        report.append(
+            f"- **{key}**: baseline={base:.4f}, new={new_val:.4f}, diff={diff:.4f} {emoji}"
+        )
 
-        report.append(f"| {key} | {base:.4f} | {new_val:.4f} | {diff:.4f} | {status} |")
+    # Ajouter images (nouveau vs baseline)
+    report.append("\n## 📈 Comparaison des plots")
+    plots = [
+        ("Vrais vs Prédits", "plot_pred", "pred_vs_true"),
+        ("Résiduels", "plot_resid", "residuals")
+    ]
+    for title, key, base_name in plots:
+        new_img = f"metrics/{base_name}.png"
+        baseline_img = f"metrics/{base_name}_baseline.png"
+        report.append(f"### {title}")
+        if os.path.exists(new_img):
+            report.append(f"**Nouveau modèle:** ![]({new_img})")
+        if os.path.exists(baseline_img):
+            report.append(f"**Baseline:** ![]({baseline_img})")
 
     return "\n".join(report)
 
@@ -40,12 +47,7 @@ def main():
     new_path = "metrics/metrics.json"
     output_path = "reports/comparison_report.md"
 
-    if not os.path.exists(baseline_path):
-        print("⚠ Baseline metrics not found. Run main branch first to set baseline.")
-        baseline = {}
-    else:
-        baseline = load_json(baseline_path)
-
+    baseline = load_json(baseline_path)
     new = load_json(new_path)
 
     report = compare_metrics(baseline, new)

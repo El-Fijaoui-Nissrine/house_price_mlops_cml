@@ -40,16 +40,14 @@ def compare_metrics(baseline, new, links):
     report.append("\n## 📈 Comparaison des plots")
 
     plots = [
-        ("Vrais vs Prédits", "pred_vs_true", links.get("NEW_PRED_URL", "metrics/pred_vs_true.png")),
-        ("Résiduels", "residuals", links.get("NEW_RES_URL", "metrics/residuals.png"))
+        ("Vrais vs Prédits", "pred_vs_true", links.get("NEW_PRED_URL", "metrics/pred_vs_true.png"),links.get("BASE_PRED_URL", "metrics/pred_vs_true_baseline.png")),
+        ("Résiduels", "residuals", links.get("NEW_RES_URL", "metrics/residuals.png"), links.get("BASE_RES_URL", "metrics/residuals_baseline.png"))
     ]
 
-    for title, name, new_url in plots:
-        base_img = f"metrics/{name}_baseline.png"
+    for title,  new_url , base_url in plots:
         report.append(f"\n### {title}")
         report.append(f"**Nouveau modèle:** ![]({new_url})")
-        if os.path.exists(base_img):
-            report.append(f"**Baseline:** ![]({base_img})")
+        report.append(f"**Baseline:** ![]({base_url})")
 
     return "\n".join(report)
 

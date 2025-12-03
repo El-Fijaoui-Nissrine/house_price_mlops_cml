@@ -36,9 +36,9 @@ def compare_metrics(baseline, new):
         baseline_img = f"metrics/{base_name}_baseline.png"
         report.append(f"### {title}")
         if os.path.exists(new_img):
-            report.append(f"**Nouveau modèle:** ![]({new_img})")
+            report.append(f"**Nouveau modèle:** ![](metrics/pred_vs_true.png)")
         if os.path.exists(baseline_img):
-            report.append(f"**Baseline:** ![]({baseline_img})")
+            report.append(f"**Baseline:** ![](metrics/pred_vs_true_baseline.png)")
 
     return "\n".join(report)
 

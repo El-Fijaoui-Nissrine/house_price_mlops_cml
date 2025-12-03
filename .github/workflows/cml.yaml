@@ -21,7 +21,7 @@ jobs:
       #  Set up Docker container
       - name: Build Docker image
         run: |
-          docker build -t house-price-mlops .
+          docker build -t house_price_mlops .
 
       #  Run training in Docker
       - name: Train model inside Docker
@@ -29,7 +29,7 @@ jobs:
           docker run --rm \
             -v ${{ github.workspace }}:/app \
             -w /app \
-            house-price-mlops \
+            house_price_mlops \
             python -m src.train
 
       #  Run evaluation inside Docker
@@ -38,7 +38,7 @@ jobs:
           docker run --rm \
             -v ${{ github.workspace }}:/app \
             -w /app \
-            house-price-mlops \
+            house_price_mlops \
             python -m src.evaluate
 
       #  Generate plots inside Docker
@@ -47,7 +47,7 @@ jobs:
           docker run --rm \
             -v ${{ github.workspace }}:/app \
             -w /app \
-            house-price-mlops \
+            house_price_mlops \
             python -m src.plots
 
       #  Compare metrics inside Docker
@@ -56,7 +56,7 @@ jobs:
           docker run --rm \
             -v ${{ github.workspace }}:/app \
             -w /app \
-            house-price-mlops \
+            house_price_mlops \
             python -m src.compare
 
       #  Post CML comment

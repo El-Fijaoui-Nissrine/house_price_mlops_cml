@@ -18,6 +18,8 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
+      - name: Install CML
+        run: npm install -g @dvcorg/cml
       #  Set up Docker container
       - name: Build Docker image
         run: |

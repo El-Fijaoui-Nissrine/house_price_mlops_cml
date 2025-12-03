@@ -63,6 +63,15 @@ jobs:
           NEW_RES=$(cml publish metrics/residuals.png)
           echo "NEW_PRED_URL=$NEW_PRED" >> reports/links.env
           echo "NEW_RES_URL=$NEW_RES" >> reports/links.env
+      - name: Publish baseline images to CML
+        env:
+          REPO_TOKEN: ${{ secrets.CML_GH_TOKEN }}
+        run: |
+          mkdir -p reports
+          BASE_PRED=$(cml publish metrics/pred_vs_true_baseline.png)
+          BASE_RES=$(cml publish metrics/residuals_baseline.png)
+          echo "BASE_PRED_URL=$BASE_PRED" >> reports/links.env
+          echo "BASE_RES_URL=$BASE_RES" >> reports/links.env
 
       # 8. Generate comparison report
       - name: Generate comparison report

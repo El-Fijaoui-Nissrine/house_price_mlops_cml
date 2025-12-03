@@ -64,6 +64,6 @@ jobs:
       #  Post CML comment
       - name: Post CML comment
         env:
-          REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPO_TOKEN: ${{ secrets.CML_GH_TOKEN }}
         run: |
           cml comment create reports/comparison_report.md --publish

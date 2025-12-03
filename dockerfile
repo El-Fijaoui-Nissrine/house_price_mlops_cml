@@ -14,7 +14,7 @@ WORKDIR /app
 COPY requirements.txt .
 RUN pip install --upgrade pip
 RUN pip install -r requirements.txt
-RUN pip install "cml>=0.0.1"
+
 
 # Copier tout le code
 COPY . .

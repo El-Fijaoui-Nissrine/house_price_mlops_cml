@@ -66,4 +66,4 @@ jobs:
         env:
           REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          cml-send-comment reports/comparison_report.md --md
+          cml-send-comment reports/comparison_report.md

@@ -14,19 +14,20 @@ jobs:
       pull-requests: write
 
     steps:
-      #  Checkout repository
+      # 1. Checkout repo
       - name: Checkout repository
         uses: actions/checkout@v3
 
+      # 2. Install CML CLI
       - name: Install CML
         run: npm install -g @dvcorg/cml
-      #  Set up Docker container
-      - name: Build Docker image
-        run: |
-          docker build -t house_price_mlops .
 
-      #  Run training in Docker
-      - name: Train model inside Docker
+      # 3. Build Docker image
+      - name: Build Docker image
+        run: docker build -t house_price_mlops .
+
+      # 4. Train model inside Docker
+      - name: Train model
         run: |
           docker run --rm \
             -v ${{ github.workspace }}:/app \
@@ -34,8 +35,8 @@ jobs:
             house_price_mlops \
             python -m src.train
 
-      #  Run evaluation inside Docker
-      - name: Evaluate model inside Docker
+      # 5. Evaluate model
+      - name: Evaluate model
         run: |
           docker run --rm \
             -v ${{ github.workspace }}:/app \
@@ -43,8 +44,8 @@ jobs:
             house_price_mlops \
             python -m src.evaluate
 
-      #  Generate plots inside Docker
-      - name: Generate plots inside Docker
+      # 6. Generate plots
+      - name: Generate plots
         run: |
           docker run --rm \
             -v ${{ github.workspace }}:/app \
@@ -52,7 +53,17 @@ jobs:
             house_price_mlops \
             python -m src.plots
 
-      #  Compare metrics inside Docker
+      # 7. Publish plots to CML
+      - name: Publish plot images to CML
+        env:
+          REPO_TOKEN: ${{ secrets.CML_GH_TOKEN }}
+        run: |
+          NEW_PRED=$(cml publish metrics/pred_vs_true.png)
+          NEW_RES=$(cml publish metrics/residuals.png)
+          echo "NEW_PRED_URL=$NEW_PRED" >> reports/links.env
+          echo "NEW_RES_URL=$NEW_RES" >> reports/links.env
+
+      # 8. Generate comparison report
       - name: Generate comparison report
         run: |
           docker run --rm \
@@ -60,13 +71,14 @@ jobs:
             -w /app \
             house_price_mlops \
             python -m src.compare
+
+      # 9. Debug - List metrics
       - name: Debug - List metrics
         run: ls -l metrics
 
-      #  Post CML comment
+      # 10. Post CML comment
       - name: Post CML comment
         env:
           REPO_TOKEN: ${{ secrets.CML_GH_TOKEN }}
         run: |
           cml comment create --publish reports/comparison_report.md
-

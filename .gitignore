@@ -12,4 +12,8 @@ reports/
 test_data/
 venv/
 __pycache__/
+.dvc/config.local
+.dvc/gdrive-creds.json
+gdrive_user_credentials.json
+data/processed/processed_data.csv
 

@@ -23,7 +23,7 @@ jobs:
         run: npm install -g @dvcorg/cml
 
       - name: Install DVC
-        run: pip install dvc dvc[gdrive]
+        run: pip install "dvc[gdrive]==3.63.0"
       - name: Configure DVC remote for Google Drive (OAuth)
         run: |
           # Le remote existe déjà dans .dvc/config (committé dans Git)

@@ -79,7 +79,6 @@ def preprocess_data(input_path="data/house_price.csv",
             df[col] = df[col].fillna("Unknown")
 
     # -------------------------------
-    # 4) Encoder colonnes catégorielles
     # -------------------------------
     for col in cat_cols:
         if col in df.columns:

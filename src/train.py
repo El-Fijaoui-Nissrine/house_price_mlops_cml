@@ -55,7 +55,6 @@ def train(save_path=None):
     joblib.dump(pipeline, model_out)
     print(f"✔ Modèle entraîné et sauvegardé dans : {model_out}")
 
-    # Save test data
     os.makedirs("test_data", exist_ok=True)
     X_test.to_csv("test_data/X_test.csv", index=False)
     y_test.to_csv("test_data/y_test.csv", index=False)

@@ -29,7 +29,7 @@ def compare_metrics(baseline, new, links):
         base = baseline[key]
         new_val = new.get(key, None)
         if new_val is None:
-            report.append(f"- ❌ `{key}` missing in new metrics\n")
+            report.append(f"-  `{key}` missing in new metrics\n")
             continue
         
         diff = new_val - base

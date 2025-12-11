@@ -88,5 +88,5 @@ def evaluate():
     return metrics
 
 
-if __name__ == "__main__":
+if __name__ == "_main_":
     evaluate()

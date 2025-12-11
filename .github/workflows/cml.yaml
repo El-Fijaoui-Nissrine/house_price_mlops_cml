@@ -22,6 +22,32 @@ jobs:
       - name: Install CML
         run: npm install -g @dvcorg/cml
 
+      - name: Install DVC
+        run: pip install dvc dvc[gdrive]
+      - name: Configure DVC remote for Google Drive (OAuth)
+        run: |
+          # Le remote existe déjà dans .dvc/config (committé dans Git)
+          # On vérifie juste qu'il est bien là
+          dvc remote list
+          
+          # Créer le fichier de credentials OAuth à partir des secrets GitHub
+          echo '${{ secrets.GDRIVE_CREDENTIALS_JSON }}' > gdrive_user_credentials.json
+
+          
+          # Configurer DVC pour utiliser ce fichier (config locale uniquement)
+          dvc remote modify --local new_gdrive gdrive_user_credentials_file gdrive_user_credentials.json
+          dvc remote modify --local new_gdrive gdrive_client_id "${{ secrets.GDRIVE_CLIENT_ID }}"
+          dvc remote modify --local new_gdrive gdrive_client_secret "${{ secrets.GDRIVE_CLIENT_SECRET }}"
+          
+          # Diagnostic
+          echo "=== DVC Remote Configuration ==="
+          dvc remote list
+          echo "=== DVC Local Config ==="
+          dvc config --local --list  
+      - name: Pull data & models from DVC remote (Drive)
+        run: |
+          echo "Pulling data and models from Google Drive..."
+          dvc pull -v
       # 3. Build Docker image
       - name: Build Docker image
         run: docker build -t house_price_mlops .

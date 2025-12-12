@@ -98,5 +98,5 @@ def preprocess_data(input_path="data/house_price.csv",
 # ----------------------------
 # Execution directe
 # ----------------------------
-if __name__ == "_main_":
+if __name__ == "__main__":
     preprocess_data("data/house_price.csv", "data/processed/processed_data.csv")

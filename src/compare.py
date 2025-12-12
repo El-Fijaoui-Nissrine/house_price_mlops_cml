@@ -129,6 +129,6 @@ def main():
 
     print(f"✔ Comparison report saved to {output_path}")
 
-if __name__ == "_main_":
-    
+if __name__ == "__main__":
+
     main()

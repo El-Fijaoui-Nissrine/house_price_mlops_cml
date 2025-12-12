@@ -65,6 +65,7 @@ def train(save_path=None):
 
     # Entraînement
     pipeline.fit(X_train, y_train)
+    
 
     # Sauvegarde
     os.makedirs("models", exist_ok=True)
@@ -81,5 +82,5 @@ def train(save_path=None):
     return pipeline, (X_test, y_test)
 
 
-if __name__ == "_main_":
+if __name__ == "__main__":
     train()

@@ -66,6 +66,7 @@ def plot_residuals():
     plt.legend()
 
     os.makedirs(metrics_dir, exist_ok=True)
+
     plt.tight_layout()
     plt.savefig(out_path)
     plt.close()
@@ -73,5 +74,6 @@ def plot_residuals():
     return out_path
 
 if __name__ == "__main__":
+    
     plot_pred_vs_true()
     plot_residuals()

@@ -65,6 +65,7 @@ def train(save_path=None):
 
     # Entraînement
     pipeline.fit(X_train, y_train)
+    
 
     # Sauvegarde
     os.makedirs("models", exist_ok=True)

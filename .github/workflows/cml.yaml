@@ -118,3 +118,9 @@ jobs:
           REPO_TOKEN: ${{ secrets.CML_GH_TOKEN }}
         run: |
           cml comment create --publish reports/comparison_report.md
+      # Build & run API 
+      - name: Build & run API
+        run: |
+          docker build -t house_price_api .
+          docker run --rm -d -p 8000:8000 house_price_api
+

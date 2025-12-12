@@ -81,10 +81,7 @@ def preprocess_data(input_path="data/house_price.csv",
     # -------------------------------
     # 4) Encoder colonnes catégorielles
     # -------------------------------
-    for col in cat_cols:
-        if col in df.columns:
-            encoder = LabelEncoder()
-            df[col] = encoder.fit_transform(df[col])
+
 
     # -------------------------------
     # 5) Sauvegarder dataset prétraité

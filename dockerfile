@@ -19,5 +19,8 @@ RUN pip install -r requirements.txt
 # Copier tout le code
 COPY . .
 
-# Commande par défaut (utile pour debug)
-CMD ["python", "-m", "src.train"]
+# Exposer le port pour l'API
+EXPOSE 8000
+
+# Commande par défaut : lancer l'API
+CMD ["uvicorn", "src.api:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
